@@ -6,6 +6,8 @@ import pyarrow.feather as feather
 
 from config.config import Config
 
+# TODO: Logging
+
 class BasePreparator():
     def __init__(self) -> None:
         self.csv_files = glob.glob(os.path.join(Config.CIC_IDS_2018_PROCESSED_CSVS, '*.csv'))
@@ -62,7 +64,8 @@ class BasePreparator():
     
     def feature_target_separation(self, df) -> None:
         print("splitting")
-        self.features = df.drop(columns=['label', 'label_cat', 'label_is_attack'])
+        #self.features = df.drop(columns=['label', 'label_cat', 'label_is_attack'])
+        self.features = df[df.columns.drop(list(df.filter(regex='label')))]
         self.target = df[['label_is_attack', 'label_cat', 'label']]
 
     def base_dataset_pipeline(self):
