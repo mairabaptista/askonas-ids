@@ -6,7 +6,9 @@ load_dotenv()  # TODO: replace load_dotenv logic with pydantic
 class Config:
     # paths
     DATASETS_FOLDER = os.getenv('DATASETS_FOLDER')
-    CIC_IDS_2018_PROCESSED_CSVS = os.getenv('CIC_IDS_2018_PROCESSED_CSVS')
+    STATS_AND_IMAGES_FOLDER = os.getenv('STATS_AND_IMAGES_FOLDER')
+    MODELS_FOLDER = os.getenv('MODELS_FOLDER')
+    CIC_IDS_2018_PROCESSED_CSVS = os.getenv('CIC_IDS_2018_PROCESSED_CSVS')    
 
     data_types = {
         'dst_port': 'uint32',

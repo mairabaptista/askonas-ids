@@ -3,6 +3,8 @@ from dataset_generators.individual_datasets import IndividualDatasetPrep
 from dataset_generators.PCA_generators import pcaGenerator
 from dataset_generators.correlation_generators import CorrelationGenerator
 
+from model_training.train_pipeline import TrainPipeline
+
 import pandas as pd
 import pyarrow.feather as feather
 
@@ -18,7 +20,12 @@ import pyarrow.feather as feather
 #dataset_generator = pcaGenerator()
 #dataset_generator.pipeline_binary()
 
-dataset_generator = CorrelationGenerator()
-dataset_generator.correlation_pipeline()
+#dataset_generator = CorrelationGenerator()
+#dataset_generator.correlation_pipeline()
 
+
+#### TRAIN
+
+train_generator = TrainPipeline()
+train_generator.pipeline()
 
