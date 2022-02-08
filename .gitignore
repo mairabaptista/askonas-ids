@@ -9,6 +9,13 @@ __pycache__/
 # C extensions
 *.so
 
+# dataset extensions
+*.feather
+
+# saved models
+*.sav
+*.h5
+
 # Distribution / packaging
 .Python
 build/

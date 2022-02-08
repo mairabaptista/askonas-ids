@@ -4,10 +4,38 @@ from dotenv import load_dotenv
 load_dotenv()  # TODO: replace load_dotenv logic with pydantic
 
 class Config:
+
+    rand_state = 42
+    COLUMN_LABEL = 'label'
+    COLUMN_LABEL_CAT = 'label_cat'
+    COLUMN_LABEL_IS_ATTACK = 'label_is_attack'
+    LABEL_BENIGN = 'Benign'
+    LABEL_CAT_MAPPING = {
+        'Benign': 0,
+        'Bot': 1,
+        'Brute Force -Web': 2,
+        'Brute Force -XSS': 3,
+        'DoS attacks-GoldenEye': 4,
+        'DoS attacks-Hulk': 5,
+        'DoS attacks-SlowHTTPTest': 6,
+        'DoS attacks-Slowloris': 7,
+        'DDOS attack-HOIC': 8,
+        'DDOS attack-LOIC-UDP': 9,
+        'DDoS attacks-LOIC-HTTP': 10,
+        'FTP-BruteForce': 11,
+        'Infilteration': 12,
+        'SQL Injection': 13,
+        'SSH-Bruteforce': 14,
+        'DDOS LOIT': 15,
+        'Heartbleed': 16,
+        'PortScan': 17
+    }
+
     # paths
     DATASETS_FOLDER = os.getenv('DATASETS_FOLDER')
     STATS_AND_IMAGES_FOLDER = os.getenv('STATS_AND_IMAGES_FOLDER')
     MODELS_FOLDER = os.getenv('MODELS_FOLDER')
+    FEDERATED_FOLDER = os.getenv('FEDERATED_FOLDER')
     CIC_IDS_2018_PROCESSED_CSVS = os.getenv('CIC_IDS_2018_PROCESSED_CSVS')    
 
     data_types = {
@@ -92,3 +120,14 @@ class Config:
         'idle_min': 'uint64',
         'label': 'category'
     }
+
+    FEATURES_NO_VARIANCE = [
+        "bwd_blk_rate_avg",
+        "bwd_byts_b_avg",
+        "bwd_pkts_b_avg",
+        "bwd_psh_flags",
+        "bwd_urg_flags",
+        "fwd_blk_rate_avg",
+        "fwd_byts_b_avg",
+        "fwd_pkts_b_avg"
+    ]
