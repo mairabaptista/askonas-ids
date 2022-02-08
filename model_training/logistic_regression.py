@@ -14,22 +14,7 @@ class LogisticRegressionClassifier():
         self.time_stats_file = open(Config.STATS_AND_IMAGES_FOLDER + "\\time_stats.txt", "a")
         self.param_grid = [
                             {'penalty' : ['elasticnet', 'l1', 'l2'],
-                            'solver' : ['saga']
-                            }
-                        ]
-        self.param_grid_1 = [
-                            {'penalty' : ['elasticnet'],
-                            'l1_ratio': [0.5],
-                            'solver' : ['saga']
-                            }
-                        ]
-        self.param_grid_2 = [
-                            {'penalty' : ['l1'],
-                            'solver' : ['saga']
-                            }
-                        ]
-        self.param_grid_3 = [
-                            {'penalty' : ['l2'],
+                            'classifier__C' : np.logspace(-4, 4, 8),
                             'solver' : ['saga']
                             }
                         ]
@@ -43,14 +28,10 @@ class LogisticRegressionClassifier():
         scaler.fit(X_train_oh)
 
         cls_lr = LogisticRegression(verbose=2)
-        gridF_1 = GridSearchCV(estimator=cls_lr, param_grid=self.param_grid_1, cv = 3, verbose = 1, n_jobs = 10)
-        gridF_2 = GridSearchCV(estimator=cls_lr, param_grid=self.param_grid_2, cv = 3, verbose = 1, n_jobs = 10)
-        gridF_3 = GridSearchCV(estimator=cls_lr, param_grid=self.param_grid_3, cv = 3, verbose = 1, n_jobs = 10)
+        grid_model = GridSearchCV(estimator=cls_lr, param_grid=self.param_grid, cv = 5, verbose = 1)
 
         # cls_lr.fit(scaler.transform(X_train_oh), y_train.label_is_attack)
-        gridF_1.fit(scaler.transform(X_train_oh), y_train.label_is_attack)
-        gridF_2.fit(scaler.transform(X_train_oh), y_train.label_is_attack)
-        gridF_3.fit(scaler.transform(X_train_oh), y_train.label_is_attack)
+        grid_model.fit(scaler.transform(X_train_oh), y_train.label_is_attack)
 
         self.end_time = time.time()
         self.time_stats_file.write("---- Time stats for Logistic Regression Classifier ----")
@@ -59,7 +40,5 @@ class LogisticRegressionClassifier():
         self.time_stats_file.write("\n")
         self.time_stats_file.close()
 
-        save_model(gridF_1, "logreg_model_1.sav")
-        save_model(gridF_2, "logreg_model_1.sav")
-        save_model(gridF_3, "logreg_model_1.sav")
+        save_model(grid_model, "logreg_model.sav")
         print("Saved LogReg Classifier")
