@@ -1,6 +1,13 @@
 # Folders
 datasets/
 
+# specific files
+main_old.py
+federated/run.sh
+federated/client_colab.py
+federated/server_colab.py
+time_stats.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
