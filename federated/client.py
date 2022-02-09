@@ -4,9 +4,11 @@ import numpy as np
 import pyarrow.feather as feather
 import pandas as pd
 
-from catboost import CatBoostClassifier
-from catboost import Pool
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers, models, optimizers, callbacks, regularizers, metrics
 from sklearn.metrics import log_loss
+from numpy import load
 
 # import utils
 import sys
@@ -14,71 +16,99 @@ import sys
 sys.path.insert(1, 'E:\\Mestrado\\askonas-ids')
 
 from config.config import Config
+from utils import *
+
+K = keras.backend
+
+def create_model(input_dims, 
+                 nr_layers, 
+                 nr_units, 
+                 activation, 
+                 kerner_initializer,
+                 optimizer,
+                 dropout_layer=None):
+    model = models.Sequential()
+    model.add(layers.Input(shape=[input_dims]))
+    
+    for l in range(nr_layers):
+        model.add(layers.Dense(nr_units, activation=activation, kernel_initializer=kerner_initializer))
+        
+    if dropout_layer:
+        model.add(dropout_layer)
+    
+    model.add(layers.Dense(1, activation='sigmoid'))
+    
+    model.compile(optimizer=optimizer, 
+                  loss='binary_crossentropy', 
+                  metrics=[metrics.AUC(curve='PR'),
+                           metrics.Precision(), 
+                           metrics.Recall()])
+    return model
 
 if __name__ == "__main__":
-    # Load MNIST dataset from https://www.openml.org/d/554
-    # (X_train, y_train), (X_test, y_test) = utils.load_mnist()
 
-    # Split train set into 10 partitions and randomly use one for training.
-    # partition_id = np.random.choice(10)
-    # (X_train, y_train) = utils.partition(X_train, y_train, 10)[partition_id]
-
-    # catboost starts here
-    X_train = pd.DataFrame = feather.read_feather('E:\\Mestrado\\askonas-ids\\federated\\X_train.feather')
-    X_test = pd.DataFrame = feather.read_feather('E:\\Mestrado\\askonas-ids\\federated\\X_test.feather')
-    X_eval = pd.DataFrame = feather.read_feather('E:\\Mestrado\\askonas-ids\\federated\\X_eval.feather')
-    y_eval = pd.DataFrame = feather.read_feather('E:\\Mestrado\\askonas-ids\\federated\\y_eval.feather')
-    y_train = pd.DataFrame = feather.read_feather('E:\\Mestrado\\askonas-ids\\federated\\y_train.feather')
-    y_test = pd.DataFrame = feather.read_feather('E:\\Mestrado\\askonas-ids\\federated\\y_test.feather')
-
-    train_pool = Pool(X_train, y_train.label_is_attack, cat_features=['protocol'])
-    eval_pool = Pool(X_eval, y_eval.label_is_attack, cat_features=['protocol'])
-    test_pool = Pool(X_test, cat_features=['protocol'])
-
-    minority_class_weight = len(y_train[y_train.label_is_attack == 0]) / len(y_train[y_train.label_is_attack == 1])
-    
-    model = CatBoostClassifier(loss_function='Logloss',
-                                eval_metric='Recall',                        
-                                class_weights=[1, 4.906679153],
-                                task_type='GPU',
-                                verbose=True)
-
-    # cls_cb.fit(train_pool, eval_set=eval_pool)
-
-    # Create LogisticRegression Model
     '''
-    model = LogisticRegression(
-        penalty="l2",
-        max_iter=1,  # local epoch
-        warm_start=True,  # prevent refreshing weights when fitting
-    )
-    '''
-    # Setting initial parameters, akin to model.compile for keras models
-    # utils.set_initial_params(model)
+    X_train = load(Config.FEDERATED_FOLDER + '\X_train.npy', allow_pickle=True)
+    y_train = load(Config.FEDERATED_FOLDER + '\y_train.npy', allow_pickle=True)
+    X_val = load(Config.FEDERATED_FOLDER + '\X_val.npy', allow_pickle=True)
+    y_val = feather.read_feather(Config.FEDERATED_FOLDER + "\\" + 'y_val.feather')
+    X_test = load(Config.FEDERATED_FOLDER + '\X_test.npy', allow_pickle=True)
+    y_test = feather.read_feather(Config.FEDERATED_FOLDER + "\\" + 'y_test.feather')
+    # column_names = load("data\\federated" + '\column_names.npy', allow_pickle=True)'''
+    X_train = load("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated"+ '\\X_train.npy', allow_pickle=True)
+    y_train = load("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated" + '\\y_train.npy', allow_pickle=True)
+    X_val = load("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated" + '\\X_val.npy', allow_pickle=True)
+    y_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated" + "\\" + 'y_val.feather')
+    X_test = load("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated" + '\\X_test.npy', allow_pickle=True)
+    y_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated" + "\\" + 'y_test.feather')
+
+    input_dims = X_train.shape[1]
+
+    # using the best params from DL 
+    nr_layers = 5
+    nr_units = 300
+    dropout_rate = 0.22339774943469998
+    lr = (0.001 * 0.61157158868869)
+
+    y_train_is_attack = (y_train != 0).astype('int')
+
+    minority_class_weight = len(y_train_is_attack[y_train_is_attack == 0]) / len(y_train_is_attack[y_train_is_attack == 1])
+
+    class_weights = { 
+            0: 1, 
+            1: minority_class_weight
+    }
+
+    model = create_model(input_dims=input_dims,
+                        nr_layers=nr_layers,
+                        nr_units=nr_units,
+                        activation='elu',
+                        kerner_initializer='he_normal',
+                        dropout_layer=layers.Dropout(dropout_rate),
+                        optimizer=optimizers.Adam(lr=lr))
 
     # Define Flower client
-    class MnistClient(fl.client.NumPyClient):
+    class CifarClient(fl.client.NumPyClient):
         def get_parameters(self):  # type: ignore
-            # return utils.get_model_parameters(model)
-            return model.feature_importance_
+            return model.get_weights()
 
         def fit(self, parameters, config):  # type: ignore
-            # utils.set_model_params(model, parameters)
-            model.get_feature_importance()
-            # Ignore convergence failure due to low local epochs
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                model.fit(X_train, y_train)
-            print(f"Training finished for round {config['rnd']}")
-            # return utils.get_model_parameters(model), len(X_train), {}
-            return model.feature_importance_, len(X_train), {}
+            model.set_weights(parameters)
+            # model.fit(X_train, y_train, epochs=1, batch_size=32)
+            model.fit(x=X_train, 
+                    y=y_train_is_attack,
+                    validation_data=(X_val, y_val.label_is_attack.values),
+                    batch_size=4096,
+                    epochs=1)
+            model.save(Config.MODELS_FOLDER + "\\federated\\" + 'fed_model.h5')
+            return model.get_weights(), len(X_train), {}
 
         def evaluate(self, parameters, config):  # type: ignore
-            # utils.set_model_params(model, parameters)
-            model.get_feature_importance()
-            loss = log_loss(y_test, model.predict_proba(X_test))
-            accuracy = model.score(X_test, y_test)
-            return loss, len(X_test), {"accuracy": accuracy}
+            model.set_weights(parameters)
+            e = model.evaluate(X_test, y_test.label_is_attack.values)
+            e = {out: e[i] for i, out in enumerate(model.metrics_names)}
+
+            return float(e['loss']), len(X_test), {"auc": float(e['auc']), 'precision': float(e['precision']), 'recall': float(e['recall'])}
 
     # Start Flower client
-    fl.client.start_numpy_client("0.0.0.0:8080", client=MnistClient())
+    fl.client.start_numpy_client("localhost:5040", client=CifarClient())

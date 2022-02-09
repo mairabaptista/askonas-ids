@@ -1,5 +1,3 @@
-from catboost import CatBoostClassifier
-from catboost import Pool
 import flwr as fl
 import pandas as pd
 import pyarrow.feather as feather
@@ -15,6 +13,12 @@ sys.path.insert(1, 'E:\\Mestrado\\askonas-ids')
 
 from config.config import Config
 
+# Start Flower server for three rounds of federated learning
+if __name__ == "__main__":
+    fl.server.start_server("localhost:5040", config={"num_rounds": 3})
+
+
+'''
 def fit_round(rnd: int) -> Dict:
     """Send round number to client."""
     return {"rnd": rnd}
@@ -51,3 +55,4 @@ if __name__ == "__main__":
         on_fit_config_fn=fit_round,
     )
     fl.server.start_server("0.0.0.0:8080", strategy=strategy, config={"num_rounds": 3})
+    '''
