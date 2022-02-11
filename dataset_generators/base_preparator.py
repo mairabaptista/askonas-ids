@@ -62,6 +62,17 @@ class BasePreparator():
         
         self.df = self.df.drop(columns=['timestamp', 'dst_port'])  # dropping features that will not be relevant to final estimation
     
+    def drop_minority_class_rows(self):
+        print(self.df)
+        self.df.drop(self.df.index[self.df['label'] == 'SQL Injection'], inplace=True)
+        print(self.df)
+        self.df.drop(self.df.index[self.df['label'] == 'Brute Force -XSS'], inplace=True)
+        print(self.df)
+        self.df.drop(self.df.index[self.df['label'] == 'Brute Force -Web'], inplace=True)
+        self.df.drop(self.df.index[self.df['label'] == 'DDOS attack-LOIC-UDP'], inplace=True)
+        self.df.drop(self.df.index[self.df['label'] == 'DoS attacks-Slowloris'], inplace=True)
+        self.df.drop(self.df.index[self.df['label'] == 'DoS attacks-GoldenEye'], inplace=True)
+    
     def feature_target_separation(self) -> None:
         print("splitting")
         #self.features = df.drop(columns=['label', 'label_cat', 'label_is_attack'])
@@ -73,6 +84,7 @@ class BasePreparator():
         self.replace_negative_values_with_mean()
         self.create_labels()
         self.drop_undesired_features()
+        self.drop_minority_class_rows()
         self.feature_target_separation()
         self.serialize_dataset(self.features, 'features_dataset.feather')
         self.serialize_dataset(self.target, 'target_dataset.feather')
