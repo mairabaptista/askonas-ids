@@ -11,10 +11,10 @@ class LogisticRegressionClassifier():
     def __init__(self) -> None:
         self.start_time: float
         self.end_time: float
-        self.time_stats_file = open(Config.STATS_AND_IMAGES_FOLDER + "\\time_stats.txt", "a")
+        self.time_stats_file = open(Config.STATS_AND_IMAGES_FOLDER + "/time_stats.txt", "a")
         self.param_grid = [
-                            {'penalty' : ['elasticnet', 'l1', 'l2'],
-                            'classifier__C' : np.logspace(-4, 4, 8),
+                            {'penalty' : ['l1', 'l2'],
+                            'C' : np.logspace(-4, 4, 8),
                             'solver' : ['saga']
                             }
                         ]

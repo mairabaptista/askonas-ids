@@ -6,7 +6,7 @@ import os
 import glob
 import numpy as np
 import pandas as pd
-import ml_ids.data.metadata as md
+import model_training.dl_utils.data.metadata as md
 
 
 def remove_inf_values(df: pd.DataFrame) -> pd.DataFrame:

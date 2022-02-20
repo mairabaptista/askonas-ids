@@ -9,7 +9,7 @@ class RFClassifier():
     def __init__(self) -> None:
         self.start_time: float
         self.end_time: float
-        self.time_stats_file = open(Config.STATS_AND_IMAGES_FOLDER + "\\time_stats.txt", "a")
+        self.time_stats_file = open(Config.STATS_AND_IMAGES_FOLDER + "/time_stats.txt", "a")
 
         # Number of features to consider at every split
         max_features = ['auto', 'sqrt']
@@ -21,7 +21,7 @@ class RFClassifier():
         bootstrap = [True, False]
         self.grid = {'max_features': max_features,
                     'bootstrap': bootstrap,
-                    'class_weight': 'balanced',
+                    'class_weight': ['balanced'],
                     'min_samples_split': min_samples_split,
                     'min_samples_leaf': min_samples_leaf}
 

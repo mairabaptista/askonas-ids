@@ -4,7 +4,6 @@ import time
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 import tensorflow as tf
 import uuid
 
@@ -13,9 +12,9 @@ from tensorflow.keras import layers, models, optimizers, callbacks, metrics
 from collections import Counter
 from hyperopt import fmin, hp, tpe, atpe, Trials, STATUS_OK
 
-from dl_utils.data.dataset import load_dataset
-from dl_utils.data.metadata import FEATURES_NO_VARIANCE
-from dl_utils.utils import transform_data
+from model_training.dl_utils.data.dataset import load_dataset
+from model_training.dl_utils.data.metadata import FEATURES_NO_VARIANCE
+from model_training.dl_utils.utils import transform_data
 
 from config.config import Config
 from utils import *
@@ -25,7 +24,7 @@ class DeepLearningClassifier():
     def __init__(self) -> None:
         self.start_time: float
         self.end_time: float
-        self.time_stats_file = open(Config.STATS_AND_IMAGES_FOLDER + "\\time_stats.txt", "a")
+        self.time_stats_file = open(Config.STATS_AND_IMAGES_FOLDER + "/time_stats.txt", "a")
         self.rand_state = Config.rand_state
         self.tf.random.set_seed(self.rand_state)
         self.np.random.seed(self.rand_state)

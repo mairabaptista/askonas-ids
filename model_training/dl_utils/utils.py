@@ -1,8 +1,8 @@
 import numpy as np
 import gc
-from ml_ids.model_selection import split_x_y, train_val_test_split
-from ml_ids.transform.sampling import upsample_minority_classes, downsample
-from ml_ids.transform.preprocessing import create_pipeline
+from model_training.dl_utils.model_selection import split_x_y, train_val_test_split
+from model_training.dl_utils.transform.sampling import upsample_minority_classes, downsample
+from model_training.dl_utils.transform.preprocessing import create_pipeline
 from collections import Counter
 
 

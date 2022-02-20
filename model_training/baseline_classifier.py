@@ -8,7 +8,7 @@ class BaselineClassifier():
     def __init__(self) -> None:
         self.start_time: float
         self.end_time: float
-        self.time_stats_file = open(Config.STATS_AND_IMAGES_FOLDER + "\\time_stats.txt", "a")
+        self.time_stats_file = open(Config.STATS_AND_IMAGES_FOLDER + "/time_stats.txt", "a")
 
     def train(self, X_train, y_train) -> None:
         print("Starting Baseline Classifier")

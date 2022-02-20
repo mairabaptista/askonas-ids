@@ -10,6 +10,7 @@ from config.config import Config
 
 class BasePreparator():
     def __init__(self) -> None:
+        print(Config.CIC_IDS_2018_PROCESSED_CSVS)
         self.csv_files = glob.glob(os.path.join(Config.CIC_IDS_2018_PROCESSED_CSVS, '*.csv'))
         self.df: pd.Dataframe = pd.concat((pd.read_csv(f, dtype=Config.data_types) for f in self.csv_files))
         self.features: pd.DataFrame
@@ -50,8 +51,8 @@ class BasePreparator():
         self.df['label_is_attack'] = (self.df.label != 'Benign').astype('int')
     
     def serialize_dataset(self, df, file_name) -> None:
-        print("Serializing at: ", Config.DATASETS_FOLDER + "\\" + file_name)
-        feather.write_feather(df, Config.DATASETS_FOLDER + "\\" + file_name)
+        print("Serializing at: ", Config.DATASETS_FOLDER + "/" + file_name)
+        feather.write_feather(df, Config.DATASETS_FOLDER + "/" + file_name)
 
     def drop_undesired_features(self) -> None:
         print("dropping features")
@@ -63,11 +64,9 @@ class BasePreparator():
         self.df = self.df.drop(columns=['timestamp', 'dst_port'])  # dropping features that will not be relevant to final estimation
     
     def drop_minority_class_rows(self):
-        print(self.df)
+        print("Dropping minority classes")
         self.df.drop(self.df.index[self.df['label'] == 'SQL Injection'], inplace=True)
-        print(self.df)
         self.df.drop(self.df.index[self.df['label'] == 'Brute Force -XSS'], inplace=True)
-        print(self.df)
         self.df.drop(self.df.index[self.df['label'] == 'Brute Force -Web'], inplace=True)
         self.df.drop(self.df.index[self.df['label'] == 'DDOS attack-LOIC-UDP'], inplace=True)
         self.df.drop(self.df.index[self.df['label'] == 'DoS attacks-Slowloris'], inplace=True)

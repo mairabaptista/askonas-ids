@@ -27,7 +27,7 @@ LogRegParams = Union[XY, Tuple[np.ndarray]]
 XYList = List[XY]
 
 def save_model(model, filename):
-    pickle.dump(model, open(Config.MODELS_FOLDER + "\\" + filename, 'wb'))
+    pickle.dump(model, open(Config.MODELS_FOLDER + "/" + filename, 'wb'))
 
 def print_report(ds_type, cls, X_vals, y_true, y_predict, plot_pr=False, plot_roc=False):
     print(f"Classification Report ({ds_type}):")
@@ -45,4 +45,17 @@ def print_report(ds_type, cls, X_vals, y_true, y_predict, plot_pr=False, plot_ro
         plt.show()
         
     print('\n')
+    
+def split_dataset(X, y):
+  X_train, X_hold, y_train, y_hold = train_test_split(X, y, test_size=0.2, stratify=y.label_cat, random_state=42)
+  X_eval, X_test, y_eval, y_test = train_test_split(X_hold, y_hold, test_size=0.5, stratify=y_hold.label_cat, random_state=42)
+  
+  X_train_oh = pd.get_dummies(X_train, columns=['protocol'])
+  X_eval_oh = pd.get_dummies(X_eval, columns=['protocol'])
+  X_test_oh = pd.get_dummies(X_test, columns=['protocol'])
+  
+  return X_train, X_hold, X_eval, X_test, X_train_oh, X_eval_oh, X_test_oh, y_train, \
+            y_hold,  y_eval, y_test
+
+
 
