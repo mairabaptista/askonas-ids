@@ -1,6 +1,7 @@
 """
 Utilities to modify the amount of samples of specific categories in a datasets.
 """
+
 import numpy as np
 import pandas as pd
 from imblearn.over_sampling import SMOTE, SMOTENC

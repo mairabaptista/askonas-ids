@@ -21,23 +21,29 @@ from utils import *
 
 
 class DeepLearningClassifier():
-    def __init__(self) -> None:
+    def __init__(self, X_train, y_train, X_val, y_val, X_test, y_test) -> None:
         self.start_time: float
         self.end_time: float
         self.time_stats_file = open(Config.STATS_AND_IMAGES_FOLDER + "/time_stats.txt", "a")
         self.rand_state = Config.rand_state
-        self.tf.random.set_seed(self.rand_state)
-        self.np.random.seed(self.rand_state)
-        self.dataset = load_dataset(Config.CIC_IDS_2018_PROCESSED_CSVS,
-                       omit_cols=FEATURES_NO_VARIANCE + ['timestamp', 'dst_port', 'protocol'],
-                       preserve_neg_value_cols=['init_fwd_win_byts', 'init_bwd_win_byts'])
+        tf_random = tf.random.set_seed(self.rand_state)
+        np_random = np.random.seed(self.rand_state)
+        self.X_train = X_train
+        self.y_train = y_train
+        self.X_val = X_val
+        self.y_val = y_val
+        self.X_test = X_test
+        self.y_test = y_test
+        # self.dataset = load_dataset(Config.CIC_IDS_2018_PROCESSED_CSVS,
+        #                omit_cols=FEATURES_NO_VARIANCE + ['timestamp', 'dst_port', 'protocol'],
+        #                preserve_neg_value_cols=['init_fwd_win_byts', 'init_bwd_win_byts'])
 
-        self.X_train, self.y_train, self.X_val, self.y_val, self.X_test, self.y_test, self.column_names = transform_data(dataset=self.dataset,
-            imputer_strategy='median', scaler=StandardScaler, attack_samples=100000, random_state=self.rand_state)
+        # self.X_train, self.y_train, self.X_val, self.y_val, self.X_test, self.y_test, self.column_names = transform_data(dataset=self.dataset,
+        #     imputer_strategy='median', scaler=StandardScaler, attack_samples=100000, random_state=self.rand_state)
 
         
 
-        y_train_is_attack = (self.y_train != 0).astype('int')
+        y_train_is_attack = (self.y_train.label_is_attack != 0).astype('int')
 
         minority_class_weight = len(y_train_is_attack[y_train_is_attack == 0]) / len(y_train_is_attack[y_train_is_attack == 1])
 

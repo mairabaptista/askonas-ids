@@ -55,19 +55,25 @@ if __name__ == "__main__":
     X_test = load(Config.FEDERATED_FOLDER + '\X_test.npy', allow_pickle=True)
     y_test = feather.read_feather(Config.FEDERATED_FOLDER + "\\" + 'y_test.feather')
     # column_names = load("data\\federated" + '\column_names.npy', allow_pickle=True)'''
-    X_train = load("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated"+ '\\X_train.npy', allow_pickle=True)
-    y_train = load("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated" + '\\y_train.npy', allow_pickle=True)
-    X_val = load("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated" + '\\X_val.npy', allow_pickle=True)
-    y_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated" + "\\" + 'y_val.feather')
-    X_test = load("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated" + '\\X_test.npy', allow_pickle=True)
-    y_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\datasets\\smaller_federated" + "\\" + 'y_test.feather')
+    # # X_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets"+ '\\X_train.feather')
+    # # y_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\y_train.feather')
+    # # X_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\X_val.feather')
+    # # y_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + "\\" + 'y_val.feather')
+    # X_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\X_test.feather')
+    # y_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + "\\" + 'y_test.feather')
+    X_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\enhanced"+ '\\X_train.feather')
+    y_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\enhanced" + '\\y_train.feather')
+    X_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\enhanced" + '\\X_val.feather')
+    y_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\enhanced" + "\\" + 'y_val.feather')
+    X_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\enhanced" + '\\X_test.feather')
+    y_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\enhanced" + "\\" + 'y_test.feather')
 
     input_dims = X_train.shape[1]
 
     # using the best params from DL 
-    nr_layers = 5
+    nr_layers = 4
     nr_units = 300
-    dropout_rate = 0.22339774943469998
+    dropout_rate = 0.2602400137379156
     lr = (0.001 * 0.61157158868869)
 
     y_train_is_attack = (y_train != 0).astype('int')
@@ -100,7 +106,10 @@ if __name__ == "__main__":
                     validation_data=(X_val, y_val.label_is_attack.values),
                     batch_size=4096,
                     epochs=1)
-            model.save(Config.MODELS_FOLDER + "\\federated\\" + 'fed_model.h5')
+            model.save(Config.MODELS_FOLDER + "\\federated\\" + '3_rounds.h5')
+            # model.save(Config.MODELS_FOLDER + "\\federated\\" + 'fed_model.h5')
+            # model.save(Config.MODELS_FOLDER + "\\federated\\" + 'fed_model.h5')
+            # model.save(Config.MODELS_FOLDER + "\\federated\\" + 'fed_model.h5')
             return model.get_weights(), len(X_train), {}
 
         def evaluate(self, parameters, config):  # type: ignore
@@ -108,7 +117,7 @@ if __name__ == "__main__":
             e = model.evaluate(X_test, y_test.label_is_attack.values)
             e = {out: e[i] for i, out in enumerate(model.metrics_names)}
 
-            return float(e['loss']), len(X_test), {"auc": float(e['auc']), 'precision': float(e['precision']), 'recall': float(e['recall'])}
+            return float(e['loss']), len(X_test), {"accuracy": float(e['auc']), 'precision': float(e['precision']), 'recall': float(e['recall'])}
 
     # Start Flower client
     fl.client.start_numpy_client("localhost:5040", client=CifarClient())

@@ -15,8 +15,8 @@ from utils import *
 
 class CorrelationGenerator():
     def __init__(self) -> None:  
-        self.features: pd.DataFrame = feather.read_feather(Config.DATASETS_FOLDER + "\\" + 'features_dataset.feather')
-        self.target: pd.DataFrame = feather.read_feather(Config.DATASETS_FOLDER + "\\" + 'target_dataset.feather')
+        self.features: pd.DataFrame = feather.read_feather(Config.DATASETS_FOLDER + "\\" + 'undersample_OneSidedSelection_X.feather')
+        self.target: pd.DataFrame = feather.read_feather(Config.DATASETS_FOLDER + "\\" + 'undersample_OneSidedSelection_y.feather')
         # self.X_train, self.X_hold, self.X_eval, self.X_test, self.X_train_oh, self.X_eval_oh, self.X_test_oh, self.y_train, \
         #    self.y_hold,  self.y_eval, self.y_test = split_dataset(self.features, self.target)
         self.cluster_threshold = 1

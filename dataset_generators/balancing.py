@@ -3,8 +3,8 @@ import pandas as pd
 import glob
 import os
 import pyarrow.feather as feather
-from imblearn.over_sampling import SMOTENC
-from imblearn.under_sampling import RandomUnderSampler, NearMiss
+#from imblearn.over_sampling import SMOTENC
+#from imblearn.under_sampling import RandomUnderSampler, NearMiss
 from collections import Counter
 
 from config.config import Config

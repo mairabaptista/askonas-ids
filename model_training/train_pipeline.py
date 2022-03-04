@@ -11,8 +11,10 @@ from utils import *
 
 class TrainPipeline():
     def __init__(self) -> None:
-        self.target: pd.DataFrame = feather.read_feather(Config.DATASETS_FOLDER + "/balanced/" + 'undersample_target_dataset.feather')
-        self.features_correlated = pd.DataFrame = feather.read_feather(Config.DATASETS_FOLDER + "/correlation/" + 'correlation.feather')
+        self.target: pd.DataFrame = feather.read_feather(Config.DATASETS_FOLDER + "\\undersample_OneSidedSelection_y.feather")
+        self.target['label_is_attack'] = self.target['label_cat'].apply(lambda x: 0 if x == 0 else 1)
+        print(self.target)
+        self.features_correlated = pd.DataFrame = feather.read_feather(Config.DATASETS_FOLDER + "\\correlation\\" + 'correlation.feather')
         self.X_train, self.X_hold, self.X_eval, self.X_test, self.X_train_oh, self.X_eval_oh, self.X_test_oh, self.y_train, \
             self.y_hold,  self.y_eval, self.y_test = split_dataset(self.features_correlated, self.target)
         #self.X_train_pca = pd.DataFrame = feather.read_feather(Config.DATASETS_FOLDER + "\\0.9\\" + 'X_train_pca.feather')
@@ -24,13 +26,13 @@ class TrainPipeline():
         
 
     def correlation_training(self) -> None:
-        self.time_stats_file.write("---- STARTING CORRELATION TRAINING ----")
-        self.time_stats_file.write("\n")
-        BaselineClassifier().train(self.X_train, self.y_train)
-        LogisticRegressionClassifier().train(self.X_train_oh, self.X_train, self.y_train)
-        RFClassifier().train(self.X_train_oh, self.X_train, self.y_train)
-        CatClassifier().train(self.X_eval, self.y_eval, self.X_train, self.y_train, self.X_test)
-        DeepLearningClassifier().train()
+        #self.time_stats_file.write("---- STARTING CORRELATION TRAINING ----")
+        #self.time_stats_file.write("\n")
+        #BaselineClassifier().train(self.X_train, self.y_train)
+        #LogisticRegressionClassifier().train(self.X_train_oh, self.X_train, self.y_train)
+        #RFClassifier().train(self.X_train_oh, self.X_train, self.y_train)
+        #CatClassifier().train(self.X_eval, self.y_eval, self.X_train, self.y_train, self.X_test)
+        DeepLearningClassifier(self.X_train, self.y_train, self.X_eval, self.y_eval, self.X_test, self.y_test).train()
         
 
     def PCA_training(self) -> None:

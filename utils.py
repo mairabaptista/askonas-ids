@@ -12,7 +12,6 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.base import BaseEstimator
 from sklearn.impute import SimpleImputer
 from sklearn.exceptions import NotFittedError
-from imblearn.over_sampling import SMOTE, SMOTENC
 import pickle
 from typing import Tuple, Union, List
 from collections import Counter
@@ -47,8 +46,8 @@ def print_report(ds_type, cls, X_vals, y_true, y_predict, plot_pr=False, plot_ro
     print('\n')
     
 def split_dataset(X, y):
-  X_train, X_hold, y_train, y_hold = train_test_split(X, y, test_size=0.2, stratify=y.label_cat, random_state=42)
-  X_eval, X_test, y_eval, y_test = train_test_split(X_hold, y_hold, test_size=0.5, stratify=y_hold.label_cat, random_state=42)
+  X_train, X_hold, y_train, y_hold = train_test_split(X, y, test_size=0.2, stratify=y['label_cat'], random_state=42)
+  X_eval, X_test, y_eval, y_test = train_test_split(X_hold, y_hold, test_size=0.5, stratify=y_hold['label_cat'], random_state=42)
   
   X_train_oh = pd.get_dummies(X_train, columns=['protocol'])
   X_eval_oh = pd.get_dummies(X_eval, columns=['protocol'])
