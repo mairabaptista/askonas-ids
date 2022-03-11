@@ -55,12 +55,14 @@ if __name__ == "__main__":
     X_test = load(Config.FEDERATED_FOLDER + '\X_test.npy', allow_pickle=True)
     y_test = feather.read_feather(Config.FEDERATED_FOLDER + "\\" + 'y_test.feather')
     # column_names = load("data\\federated" + '\column_names.npy', allow_pickle=True)'''
-    # # X_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets"+ '\\X_train.feather')
-    # # y_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\y_train.feather')
-    # # X_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\X_val.feather')
-    # # y_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + "\\" + 'y_val.feather')
-    # X_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\X_test.feather')
-    # y_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + "\\" + 'y_test.feather')
+
+    # X_train = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + "\\X_train.feather")
+    # y_train = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + '\\y_train.feather')
+    # X_val = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + '\\X_val.feather')
+    # y_val = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + "\\" + 'y_val.feather')
+    # X_test = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + '\\X_test.feather')
+    # y_test = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + "\\" + 'y_test.feather')
+    
     X_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\enhanced"+ '\\X_train.feather')
     y_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\enhanced" + '\\y_train.feather')
     X_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\enhanced" + '\\X_val.feather')
@@ -70,13 +72,16 @@ if __name__ == "__main__":
 
     input_dims = X_train.shape[1]
 
+    
     # using the best params from DL 
-    nr_layers = 4
+    nr_layers = 6
     nr_units = 300
-    dropout_rate = 0.2602400137379156
-    lr = (0.001 * 0.61157158868869)
+    dropout_rate = 0.07923141859099106
+    lr = (0.001 * 1.7055226678955877)
+    batch_size = 2610
 
-    y_train_is_attack = (y_train != 0).astype('int')
+    y_train_is_attack = (y_train.label_is_attack != 0).astype('int')
+
 
     minority_class_weight = len(y_train_is_attack[y_train_is_attack == 0]) / len(y_train_is_attack[y_train_is_attack == 1])
 
@@ -104,9 +109,9 @@ if __name__ == "__main__":
             model.fit(x=X_train, 
                     y=y_train_is_attack,
                     validation_data=(X_val, y_val.label_is_attack.values),
-                    batch_size=4096,
+                    batch_size=batch_size,
                     epochs=1)
-            model.save(Config.MODELS_FOLDER + "\\federated\\" + '3_rounds.h5')
+            #model.save(Config.MODELS_FOLDER + "\\federated\\" + '3_rounds.h5')
             # model.save(Config.MODELS_FOLDER + "\\federated\\" + 'fed_model.h5')
             # model.save(Config.MODELS_FOLDER + "\\federated\\" + 'fed_model.h5')
             # model.save(Config.MODELS_FOLDER + "\\federated\\" + 'fed_model.h5')

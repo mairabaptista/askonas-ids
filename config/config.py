@@ -13,22 +13,15 @@ class Config:
     LABEL_CAT_MAPPING = {
         'Benign': 0,
         'Bot': 1,
-        'Brute Force -Web': 2,
-        'Brute Force -XSS': 3,
         'DoS attacks-GoldenEye': 4,
         'DoS attacks-Hulk': 5,
         'DoS attacks-SlowHTTPTest': 6,
         'DoS attacks-Slowloris': 7,
-        'DDOS attack-HOIC': 8,
-        'DDOS attack-LOIC-UDP': 9,
-        'DDoS attacks-LOIC-HTTP': 10,
-        'FTP-BruteForce': 11,
-        'Infilteration': 12,
-        'SQL Injection': 13,
-        'SSH-Bruteforce': 14,
-        'DDOS LOIT': 15,
-        'Heartbleed': 16,
-        'PortScan': 17
+        'DDOS attack-HOIC': 2,
+        'DDoS attacks-LOIC-HTTP': 3,
+        'FTP-BruteForce': 8,
+        'Infilteration': 9,
+        'SSH-Bruteforce': 10,
     }
 
     # paths

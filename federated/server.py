@@ -16,12 +16,12 @@ import sys
 sys.path.insert(1, 'E:\\Mestrado\\askonas-ids')
 from config.config import Config
 
-# X_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets"+ '\\X_train.feather')
-# y_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\y_train.feather')
-# X_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\X_val.feather')
-# y_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + "\\" + 'y_val.feather')
-# X_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\X_test.feather')
-# y_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + "\\" + 'y_test.feather')
+# X_train = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier"+ '\\X_train.feather')
+# y_train = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + '\\y_train.feather')
+# X_val = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + '\\X_val.feather')
+# y_val = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + "\\" + 'y_val.feather')
+# X_test = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + '\\X_test.feather')
+# y_test = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + "\\" + 'y_test.feather')
 
 X_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\enhanced"+ '\\X_train.feather')
 y_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\enhanced" + '\\y_train.feather')
@@ -32,10 +32,11 @@ y_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\e
 
 input_dims = X_train.shape[1]
 
-nr_layers = 4
+nr_layers = 6
 nr_units = 300
-dropout_rate = 0.2602400137379156
-lr = (0.001 * 0.61157158868869)
+dropout_rate = 0.07923141859099106
+lr = (0.001 * 1.7055226678955877)
+batch_size = 2610
 
 NUM_CLIENTS = 100
 
@@ -74,7 +75,24 @@ def get_eval_fn(model):
         #loss, accuracy = model.evaluate(X_test, y_test.label_is_attack.values)
         e =  model.evaluate(X_test, y_test.label_is_attack.values, verbose=2, steps=5)
         e = {out: e[i] for i, out in enumerate(model.metrics_names)}
-        model.save(Config.MODELS_FOLDER + "\\federated\\" + '50_rounds_enhanced.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\10_clients\\" + '3_rounds.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '3_rounds.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '5_rounds.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '10_rounds.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '20_rounds.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '30_rounds.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '40_rounds.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '50_rounds.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '100_rounds.h5')
+
+        model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '3_rounds_enhanced.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '5_rounds_enhanced.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '10_rounds_enhanced.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '20_rounds_enhanced.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '30_rounds_enhanced.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '40_rounds_enhanced.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '50_rounds_enhanced.h5')
+        # model.save(Config.MODELS_FOLDER + "\\federated\\3_clients\\" + '100_rounds_enhanced.h5')
         #return loss, {"accuracy": accuracy}
         
         keys_list = list(e)
@@ -109,7 +127,7 @@ if __name__ == "__main__":
     )
     start = time.time()
     # Start Flower server for four rounds of federated learning
-    fl.server.start_server("localhost:5040", config={"num_rounds": 50}, strategy=strategy)
+    fl.server.start_server("localhost:5040", config={"num_rounds": 3}, strategy=strategy)
     #fl.server.start_server("localhost:5040", config={"num_rounds": 3})
     end = time.time()
     print(end-start)

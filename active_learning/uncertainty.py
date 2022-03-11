@@ -21,12 +21,12 @@ class Uncertainty:
         # load federated model
         self.model = models.load_model('E:\\Mestrado\\askonas-ids\\models\\federated\\3_clients\\50_rounds.h5')
 
-        self.X_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets"+ '\\X_train.feather')
-        self.y_train = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\y_train.feather')
-        self.X_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\X_val.feather')
-        self.y_val = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + "\\" + 'y_val.feather')
-        self.X_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + '\\X_test.feather')
-        self.y_test = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets" + "\\" + 'y_test.feather')
+        self.X_train = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier"+ '\\X_train.feather')
+        self.y_train = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + '\\y_train.feather')
+        self.X_val = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + '\\X_val.feather')
+        self.y_val = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + "\\" + 'y_val.feather')
+        self.X_test = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + '\\X_test.feather')
+        self.y_test = feather.read_feather("E:\\Mestrado\\ml-ids\\notebooks\\06_dl_classifier" + "\\" + 'y_test.feather')
 
         # test sample the 2017 dataset
         self.X_train_2017 = feather.read_feather("E:\\Mestrado\\askonas-ids\\federated\\datasets\\2017" + '\\X_train.feather')
@@ -69,6 +69,7 @@ class Uncertainty:
         if 'label_is_attack' not in y.columns:
             y = y.set_axis([*y.columns[:-1], 'label_cat'], axis=1, inplace=False)
             y['label_is_attack'] = y['label_cat'].apply(lambda x: 0 if x == 0 else 1)
+        if 'label_is_attack' not in original_y.columns:
             original_y = original_y.set_axis([*original_y.columns[:-1], 'label_cat'], axis=1, inplace=False)
             original_y['label_is_attack'] = original_y['label_cat'].apply(lambda x: 0 if x == 0 else 1)
         result = pd.concat([X, y], axis=1)
@@ -85,8 +86,8 @@ class Uncertainty:
         new_y = df[['label_is_attack', 'label_cat']]
         enhanced_X = pd.concat([original_X, new_X], ignore_index=True, sort=False)
         enhanced_y = pd.concat([original_y, new_y], ignore_index=True, sort=False)
-        self.serialize_dataset(enhanced_X, "enhanced_X_val.feather")
-        self.serialize_dataset(enhanced_y, "enhanced_y_val.feather")
+        self.serialize_dataset(enhanced_X, "enhanced_X_train_2.feather")
+        self.serialize_dataset(enhanced_y, "enhanced_y_train_2.feather")
         return enhanced_X, enhanced_y
 
     def prepare_probability_distribution(self, X):
@@ -108,9 +109,9 @@ class Uncertainty:
     
     def pipeline(self):
         """Performs all methods needed for uncertainty caculation and dataset generation."""
-        array = self.prepare_probability_distribution(self.X_val_2017)
-        test = self.select_samples(self.X_val_2017, array)
-        self.reform_dataset(test, self.y_val_2017, self.X_val, self.y_val)
+        array = self.prepare_probability_distribution(self.X_train_2017)
+        test = self.select_samples(self.X_train_2017, array)        
+        self.reform_dataset(test, self.y_train_2017, self.X_train, self.y_train)
         #print(enhanced_x, enhanced_y)
 
 if __name__ == "__main__":
